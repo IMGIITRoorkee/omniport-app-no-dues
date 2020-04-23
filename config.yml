@@ -6,3 +6,7 @@ baseUrls:
   http: no_dues/
   static: no_dues/
 isApi: true
+acceptables:
+  roles:
+  - name: no_dues.Subscriber
+  - name: no_dues.Verifier
