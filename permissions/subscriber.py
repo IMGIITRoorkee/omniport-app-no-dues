@@ -34,7 +34,7 @@ def has_subscriber_rights(person):
             person=person
         )
 
-        return True and bool(subscriber.id_card)
+        return bool(subscriber.id_card)
     except Subscriber.DoesNotExist:
         pass
 
@@ -89,5 +89,5 @@ class HasSubscriberRights(BasePermission):
         """
 
         person = request.person
-        subscriber = obj.subscriber
-        return person == subscriber.person
+        subscriber_person = obj.subscriber.person
+        return person == subscriber_person
