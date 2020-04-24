@@ -94,8 +94,8 @@ class PermissionViewset(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if has_subscriber_rights(person) and \
-                (if instance.status != NOT_REQUESTED
-                 or request.data['status'] != REQUESTED):
+                instance.status != NOT_REQUESTED or \
+                request.data['status'] != REQUESTED:
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
