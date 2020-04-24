@@ -86,23 +86,29 @@ class PermissionViewset(ModelViewSet):
         person = request.person
         instance = self.get_object()
         request_keys = request.data.keys()
-        if has_subscriber_rights(person):
-            if 'status' in request_keys:
-                if instance.status != NOT_REQUESTED or request.data['status'] != REQUESTED:
-                    return Response(
-                        data={
-                            'Error': 'You cannot perform this operation.'
-                        },
-                        status=status.HTTP_403_FORBIDDEN,
-                    )
-        elif has_verifier_rights(request.person):
-            if 'status' in request_keys:
-                if request.data['status'] in [NOT_REQUESTED, REQUESTED]:
-                    return Response(
-                        data={
-                            'Error': 'You cannot perform this operation.'
-                        },
-                        status=status.HTTP_403_FORBIDDEN,
-                    )
+        if 'status' not in request_keys:
+            return Response(
+                data={
+                    'Error': 'Missing required argument status.'
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if has_subscriber_rights(person) and \
+                (if instance.status != NOT_REQUESTED
+                 or request.data['status'] != REQUESTED):
+            return Response(
+                data={
+                    'Error': 'You cannot perform this operation.'
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        elif has_verifier_rights(request.person) and \
+                request.data['status'] in [NOT_REQUESTED, REQUESTED]:
+            return Response(
+                data={
+                    'Error': 'You cannot perform this operation.'
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         return super(PermissionViewset, self).partial_update(request, *args, **kwargs)
