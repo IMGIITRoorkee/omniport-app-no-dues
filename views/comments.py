@@ -34,6 +34,26 @@ class PermissionCommentViewSet(CommentViewSet):
 
         try:
             permission_id = request.data.pop('permission_id')
+            person = request.person
+            permission = Permission.objects.get(id=permission_id)
+            is_right_authority = has_verification_rights_on_authority(
+                person, permission.authority
+                )
+            if  is_right_authority or permission.subscriber.person == person:
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                comment = serializer.save(commenter=person)
+                permission.comments.add(comment)
+                permission.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(
+                    data={
+                        'Error': 'You cannot perform this operation.'
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
         except KeyError:
             return Response(
                 data={
@@ -41,28 +61,11 @@ class PermissionCommentViewSet(CommentViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        person = request.person
-        try:
-            permission = Permission.objects.get(id=permission_id)
-        except Permission.DoesNotExist():
+            
+        except Permission.DoesNotExist:
             return Response(
                 data={
                     'Error': 'Requested resource does not exist.'
                 },
                 status=status.HTTP_404_NOT_FOUND,
-            )
-        if has_verification_rights_on_authority(person, permission.authority) \
-                or permission.subscriber.person == person:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            comment = serializer.save(commenter=person)
-            permission.comments.add(comment)
-            permission.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(
-                data={
-                    'Error': 'You cannot perform this operation.'
-                },
-                status=status.HTTP_403_FORBIDDEN,
             )
