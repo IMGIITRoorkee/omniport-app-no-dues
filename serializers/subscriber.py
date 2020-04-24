@@ -33,4 +33,3 @@ class SubscriberSerializer(ModelSerializer):
             'person',
             'no_due',
         ]
-        depth = 1

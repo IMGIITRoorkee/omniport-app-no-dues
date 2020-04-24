@@ -63,7 +63,6 @@ class PermissionListSerializer(PermissionBaseSerializer):
             'authority',
             'status_display_name',
         ]
-        depth = 1
 
 
 class PermissionDetailSerializer(PermissionListSerializer):
@@ -92,4 +91,3 @@ class PermissionDetailSerializer(PermissionListSerializer):
             'authority',
             'status_display_name',
         ]
-        depth = 1

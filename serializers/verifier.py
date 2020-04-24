@@ -32,4 +32,3 @@ class VerifierSerializer(ModelSerializer):
             'end_date',
         ]
         read_only = '__all__'
-        depth = 1

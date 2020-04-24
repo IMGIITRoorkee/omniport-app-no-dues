@@ -36,6 +36,7 @@ class Subscriber(AbstractRole):
     @property
     def no_due(self):
         permissions = self.permissions
-        count_unvalidated = permissions.filter(
-            ~(Q(status=APPROVED) | Q(status=NOT_APPLICABLE))).count()
-        return count_unvalidated == 0
+        due = permissions.filter(
+            ~(Q(status=APPROVED) | Q(status=NOT_APPLICABLE))).exists()
+        no_due = not due
+        return no_due

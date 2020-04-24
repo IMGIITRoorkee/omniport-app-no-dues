@@ -20,4 +20,3 @@ class AuthoritySerializer(ModelSerializer):
             'datetime_created',
             'datetime_modified',
         ]
-        depth = 1
