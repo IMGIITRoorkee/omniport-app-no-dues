@@ -41,7 +41,7 @@ class PermissionCommentViewSet(CommentViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        person = request.user.person
+        person = request.person
         try:
             permission = Permission.objects.get(id=permission_id)
         except Permission.DoesNotExist():

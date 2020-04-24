@@ -56,7 +56,7 @@ class IsSubscriber(BasePermission):
         return(
             request.user is not None
             and request.person is not None
-            and is_subscriber(request.user.person)
+            and is_subscriber(request.person)
         )
 
 
@@ -75,7 +75,7 @@ class HasSubscriberRights(BasePermission):
         return(
             request.user is not None
             and request.person is not None
-            and has_subscriber_rights(request.user.person)
+            and has_subscriber_rights(request.person)
         )
 
     def has_object_permission(self, request, view, obj):
