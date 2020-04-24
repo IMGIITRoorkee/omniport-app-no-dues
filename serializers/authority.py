@@ -20,3 +20,4 @@ class AuthoritySerializer(ModelSerializer):
             'datetime_created',
             'datetime_modified',
         ]
+        read_only = '__all__'
