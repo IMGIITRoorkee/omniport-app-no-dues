@@ -46,5 +46,6 @@ class Permission(CommentableMixin, Model):
 
         subscriber = self.subscriber
         authority = self.authority
+        status = self.status
 
-        return f'{authority}: {subscriber}'
+        return f'{authority}: {subscriber} ({status})'

@@ -15,7 +15,6 @@ class Subscriber(AbstractRole):
     """
 
     id_card = models.ImageField(
-
         upload_to=UploadTo('no_dues', 'id_cards'),
         verbose_name='Institute ID card',
         null=True,
