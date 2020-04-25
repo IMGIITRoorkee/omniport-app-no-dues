@@ -15,7 +15,13 @@ class SubscriberSerializer(ModelSerializer):
         read_only=True,
     )
 
-    no_due = serializers.BooleanField()
+    no_due = serializers.BooleanField(
+        read_only=True,
+    )
+
+    required_authorities_selected = serializers.BooleanField(
+        read_only=True,
+    )
 
     class Meta:
         """
