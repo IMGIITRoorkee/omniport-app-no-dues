@@ -1,5 +1,5 @@
 from rest_framework.status import (
-    HTTP_400_BAD_REQUEST, HTTP_201_CREATED
+    HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_201_CREATED
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,6 +18,16 @@ class SelectAuthorities(APIView):
     """
 
     permission_classes = [IsSubscriber & ~HasSubscriberRights]
+
+    def options(self, request):
+        residence_options = [{'slug': pair[0], 'name': pair[1]}
+                             for pair in RESIDENCES_EDITED_SLUG]
+        return Response(
+            data={
+                'residence_options': residence_options
+            },
+            status=HTTP_200_OK
+        )
 
     def post(self, request):
         person = request.person
