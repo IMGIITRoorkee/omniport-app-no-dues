@@ -20,13 +20,12 @@ class PermissionBaseSerializer(ModelSerializer):
 
     class Meta:
         """
-        Meta class for PermissionListSerializer
+        Meta class for PermissionBaseSerializer
         """
 
         model = Permission
         exclude = [
             'datetime_created',
-            'datetime_modified',
             'comments',
             'subscriber',
         ]
@@ -34,6 +33,7 @@ class PermissionBaseSerializer(ModelSerializer):
             'id',
             'authority',
             'status_display_name',
+            'last_modified_by',
         ]
 
 
@@ -54,7 +54,6 @@ class PermissionListSerializer(PermissionBaseSerializer):
         model = Permission
         exclude = [
             'datetime_created',
-            'datetime_modified',
             'comments',
         ]
         read_only = [
@@ -62,6 +61,7 @@ class PermissionListSerializer(PermissionBaseSerializer):
             'subscriber',
             'authority',
             'status_display_name',
+            'last_modified_by',
         ]
 
 
@@ -83,11 +83,11 @@ class PermissionDetailSerializer(PermissionListSerializer):
         model = Permission
         exclude = [
             'datetime_created',
-            'datetime_modified',
         ]
         read_only = [
             'id',
             'subscriber',
             'authority',
             'status_display_name',
+            'last_modified_by',
         ]

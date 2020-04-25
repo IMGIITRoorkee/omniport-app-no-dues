@@ -98,8 +98,8 @@ class PermissionViewset(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if has_subscriber_rights(person) and \
-                instance.status != NOT_REQUESTED or \
-                request.data['status'] != REQUESTED:
+                (instance.status != NOT_REQUESTED or
+                 request.data['status'] != REQUESTED):
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
@@ -114,5 +114,13 @@ class PermissionViewset(ModelViewSet):
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+        # The permission will be updated now, this can handle notifications
+        verifier = get_role(person, 'no_dues.Verifier',
+                            silent=True, is_custom_role=True)
+        if verifier:
+            instance.last_modified_by = person.full_name
+            instance.save()
+            print(instance.__dict__)
 
         return super(PermissionViewset, self).partial_update(request, *args, **kwargs)

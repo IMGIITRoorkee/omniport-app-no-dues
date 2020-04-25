@@ -30,6 +30,11 @@ class Permission(CommentableMixin, Model):
         choices=PERMISSION_STATUSES,
         default=NOT_REQUESTED,
     )
+    last_modified_by = models.CharField(
+        max_length=127,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         """

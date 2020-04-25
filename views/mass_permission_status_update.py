@@ -58,6 +58,7 @@ class MassPermissionStatusUpdate(APIView):
                 report.append(report_entity)
                 continue
             permission.status = status
+            permission.last_modified_by = person.full_name
             permission.save()
             report_entity['Status'] = 1
             report_entity['Info'] = 'Success'

@@ -34,4 +34,5 @@ class SubscriberDetailSerializer(SubscriberSerializer):
             'person',
             'no_due',
             'permissions',
+            'required_authorities_selected',
         ]
