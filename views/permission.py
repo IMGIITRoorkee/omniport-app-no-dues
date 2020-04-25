@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -34,6 +35,8 @@ class PermissionViewset(ModelViewSet):
         'head',
     ]
     pagination_class = None
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
 
     def get_serializer_class(self):
         """
@@ -66,7 +69,8 @@ class PermissionViewset(ModelViewSet):
                                 silent=True, is_custom_role=True)
             result = Permission.objects.filter(
                 Q(authority=verifier.authority) &
-                (Q(status=REQUESTED) | Q(status=REPORTED))
+                (Q(status=REQUESTED) | Q(status=REPORTED) | Q(
+                    status=APPROVED) | Q(status=NOT_APPLICABLE))
             )
 
         return result
