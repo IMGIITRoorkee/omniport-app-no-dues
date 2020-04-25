@@ -21,6 +21,10 @@ class Subscriber(AbstractRole):
         blank=True,
     )
 
+    required_authorities_selected = models.BooleanField(
+        default=False,
+    )
+
     def __str__(self):
         """
         Return the string representation of the model

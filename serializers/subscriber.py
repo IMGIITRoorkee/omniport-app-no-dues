@@ -32,4 +32,5 @@ class SubscriberSerializer(ModelSerializer):
         read_only = [
             'person',
             'no_due',
+            'required_authorities_selected',
         ]

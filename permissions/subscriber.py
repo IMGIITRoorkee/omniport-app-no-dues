@@ -24,7 +24,8 @@ def is_subscriber(person):
 
 def has_subscriber_rights(person):
     """
-    Check if the person is a subscriber and has uploaded
+    Check if the person is a subscriber and has uploaded the ID card and 
+    selected their required authorities
     :param person: the person whose rights are being checked
     :return: True if the user has privileges, False otherwise
     """
@@ -34,7 +35,8 @@ def has_subscriber_rights(person):
             person=person
         )
 
-        return bool(subscriber.id_card)
+        return bool(subscriber.id_card) and \
+            subscriber.required_authorities_selected
     except Subscriber.DoesNotExist:
         pass
 
