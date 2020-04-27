@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from kernel.managers.get_role import get_role
 from no_dues.constants import RESIDENCES_EDITED_SLUG
 from no_dues.models import Permission, Authority
+from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.permissions import (
     IsSubscriber, HasSubscriberRights
 )
@@ -30,6 +31,7 @@ class SelectAuthorities(APIView):
         )
 
     def post(self, request):
+        print(request.data)
         person = request.person
         subscriber = get_role(person, 'no_dues.Subscriber',
                               silent=True, is_custom_role=True)
@@ -61,6 +63,6 @@ class SelectAuthorities(APIView):
         subscriber.save()
 
         return Response(
-            data=subscriber,
+            data=SubscriberSerializer(subscriber).data,
             status=HTTP_201_CREATED,
         )

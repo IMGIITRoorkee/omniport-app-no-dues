@@ -14,8 +14,8 @@ from no_dues.views.select_authorities import SelectAuthorities
 app_name = 'no_dues'
 
 router = routers.SimpleRouter()
-router.register(r'permission', PermissionViewset, base_name='permission')
-router.register(r'comment', PermissionCommentViewSet, base_name='comment')
+router.register(r'permission', PermissionViewset, basename='permission')
+router.register(r'comment', PermissionCommentViewSet, basename='comment')
 
 
 urlpatterns = [
