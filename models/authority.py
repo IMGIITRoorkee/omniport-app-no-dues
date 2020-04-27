@@ -22,6 +22,10 @@ class Authority(Model):
         blank=True
     )
 
+    email = models.EmailField(
+        blank=True
+    )
+
     class Meta:
         """
         Meta class for Authority
