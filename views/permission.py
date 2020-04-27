@@ -12,6 +12,7 @@ from no_dues.permissions import (
 from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
 )
+from no_dues.filters.permission import PermissionFilterSet
 from no_dues.constants import (
     NOT_REQUESTED,
     REQUESTED,
@@ -36,7 +37,7 @@ class PermissionViewset(ModelViewSet):
     ]
     pagination_class = None
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status']
+    filterset_class = PermissionFilterSet
 
     def get_serializer_class(self):
         """
