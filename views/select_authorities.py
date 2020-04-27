@@ -31,7 +31,6 @@ class SelectAuthorities(APIView):
         )
 
     def post(self, request):
-        print(request.data)
         person = request.person
         subscriber = get_role(person, 'no_dues.Subscriber',
                               silent=True, is_custom_role=True)
