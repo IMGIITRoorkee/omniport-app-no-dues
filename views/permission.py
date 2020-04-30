@@ -108,7 +108,8 @@ class PermissionViewset(ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
         elif has_verifier_rights(request.person) and \
-                request.data['status'] in [NOT_REQUESTED, REQUESTED]:
+                (request.data['status'] in [NOT_REQUESTED, REQUESTED] or
+                 instance.status in [NOT_REQUESTED, APPROVED, NOT_APPLICABLE]):
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
@@ -122,6 +123,5 @@ class PermissionViewset(ModelViewSet):
         if verifier:
             instance.last_modified_by = person.full_name
             instance.save()
-            print(instance.__dict__)
 
         return super(PermissionViewset, self).partial_update(request, *args, **kwargs)
