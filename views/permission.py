@@ -13,6 +13,9 @@ from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
 )
 from no_dues.filters.permission import PermissionFilterSet
+from no_dues.utils.send_status_change_notification import (
+    send_status_change_notification
+)
 from no_dues.constants import (
     NOT_REQUESTED,
     REQUESTED,
@@ -117,11 +120,21 @@ class PermissionViewset(ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # The permission will be updated now, this can handle notifications
+        return super(PermissionViewset, self).partial_update(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        """
+        This function overrides the perform_update function (invoked when PATCH
+        request is made). This handles the instance after it is updated.
+        """
+
+        person = self.request.person
+        serializer.save()
+
+        instance = self.get_object()
         verifier = get_role(person, 'no_dues.Verifier',
                             silent=True, is_custom_role=True)
         if verifier:
             instance.last_modified_by = person.full_name
             instance.save()
-
-        return super(PermissionViewset, self).partial_update(request, *args, **kwargs)
+            send_status_change_notification(instance)

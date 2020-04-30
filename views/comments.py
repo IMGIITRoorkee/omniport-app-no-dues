@@ -8,6 +8,9 @@ from no_dues.permissions import (
     has_verification_rights_on_authority, has_subscriber_rights,
     HasSubscriberRights, HasVerifierRights
 )
+from no_dues.utils.send_comment_notification import (
+    send_comment_notification
+)
 
 
 class PermissionCommentViewSet(CommentViewSet):
@@ -44,6 +47,8 @@ class PermissionCommentViewSet(CommentViewSet):
                 comment = serializer.save(commenter=person)
                 permission.comments.add(comment)
                 permission.save()
+                send_comment_notification(
+                    permission, comment, is_right_authority)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(
