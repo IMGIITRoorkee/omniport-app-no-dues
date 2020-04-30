@@ -15,7 +15,6 @@ class PermissionCommentViewSet(CommentViewSet):
     The view for CRUD operations of a Permission comment
     """
 
-    permission_classes = [HasSubscriberRights | HasVerifierRights]
     http_method_names = [
         'post',
         'options',
@@ -33,13 +32,13 @@ class PermissionCommentViewSet(CommentViewSet):
         """
 
         try:
-            permission_id = request.data.pop('permission_id')
+            permission_id = request.data.pop('permission_id')[0]
             person = request.person
             permission = Permission.objects.get(id=permission_id)
             is_right_authority = has_verification_rights_on_authority(
                 person, permission.authority
-                )
-            if  is_right_authority or permission.subscriber.person == person:
+            )
+            if is_right_authority or permission.subscriber.person == person:
                 serializer = self.get_serializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 comment = serializer.save(commenter=person)
@@ -61,7 +60,7 @@ class PermissionCommentViewSet(CommentViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-            
+
         except Permission.DoesNotExist:
             return Response(
                 data={
