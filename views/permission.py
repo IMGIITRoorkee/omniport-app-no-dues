@@ -75,7 +75,7 @@ class PermissionViewset(ModelViewSet):
                 Q(authority=verifier.authority) &
                 (Q(status=REQUESTED) | Q(status=REPORTED) | Q(
                     status=APPROVED) | Q(status=NOT_APPLICABLE))
-            )
+            ).order_by("-datetime_modified")
 
         return result
 

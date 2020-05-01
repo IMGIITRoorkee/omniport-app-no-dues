@@ -11,6 +11,11 @@ class SubscriberSerializer(ModelSerializer):
     Serializer for the Subscriber model
     """
 
+    person_id = serializers.IntegerField(
+        source="person.id",
+        read_only=True,
+    )
+
     no_due = serializers.BooleanField(
         read_only=True,
     )
@@ -21,6 +26,11 @@ class SubscriberSerializer(ModelSerializer):
 
     person_name = serializers.CharField(
         source='person.full_name',
+        read_only=True,
+    )
+
+    person_degree = serializers.CharField(
+        source="person.student.branch.degree.name",
         read_only=True,
     )
 
@@ -48,9 +58,6 @@ class SubscriberSerializer(ModelSerializer):
             'person',
         ]
         read_only = [
-            'person_name',
-            'person_enrolment',
-            'person_department',
             'no_due',
             'required_authorities_selected',
         ]
