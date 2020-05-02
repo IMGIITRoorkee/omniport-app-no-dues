@@ -11,6 +11,7 @@ from no_dues.permissions import (
 from no_dues.utils.send_comment_notification import (
     send_comment_notification
 )
+from no_dues.constants import REPORTED
 
 
 class PermissionCommentViewSet(CommentViewSet):
@@ -36,6 +37,7 @@ class PermissionCommentViewSet(CommentViewSet):
 
         try:
             permission_id = request.data.pop('permission_id')[0]
+            mark_reported = request.data.get('mark_reported', [])[0]
             person = request.person
             permission = Permission.objects.get(id=permission_id)
             is_right_authority = has_verification_rights_on_authority(
@@ -45,6 +47,10 @@ class PermissionCommentViewSet(CommentViewSet):
                 serializer = self.get_serializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 comment = serializer.save(commenter=person)
+
+                if is_right_authority and mark_reported:
+                    permission.status = REPORTED
+
                 permission.comments.add(comment)
                 permission.save()
                 send_comment_notification(

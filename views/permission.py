@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
+from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -39,8 +40,9 @@ class PermissionViewset(ModelViewSet):
         'head',
     ]
     pagination_class = None
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PermissionFilterSet
+    search_fields = ['subscriber__person__student__enrolment_number']
 
     def get_serializer_class(self):
         """
@@ -112,7 +114,7 @@ class PermissionViewset(ModelViewSet):
             )
         elif has_verifier_rights(request.person) and \
                 (request.data['status'] in [NOT_REQUESTED, REQUESTED] or
-                 instance.status in [NOT_REQUESTED, APPROVED, NOT_APPLICABLE]):
+                 instance.status in [NOT_REQUESTED]):
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'

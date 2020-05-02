@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from kernel.managers.get_role import get_role
 from no_dues.constants import (
-    APPROVED, NOT_APPLICABLE
+    REPORTED, APPROVED, NOT_APPLICABLE
 )
 from no_dues.models import Subscriber, Verifier, Permission
 from no_dues.permissions import (
@@ -32,7 +32,7 @@ class MassPermissionStatusUpdate(APIView):
         enrolment_numbers = request.data.get('enrolment_numbers', [])
         status = request.data.get('status', '')
 
-        if status not in [APPROVED, NOT_APPLICABLE]:
+        if status not in [APPROVED, NOT_APPLICABLE, REPORTED]:
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
