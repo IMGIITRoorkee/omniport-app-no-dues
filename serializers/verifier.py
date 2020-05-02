@@ -12,9 +12,11 @@ class VerifierSerializer(ModelSerializer):
     Serializer for the Verifier model
     """
 
-    person = AvatarSerializer(
+    person_name = serializers.CharField(
+        source='person.full_name',
         read_only=True,
     )
+
     authority = AuthoritySerializer(
         read_only=True,
     )
