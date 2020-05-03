@@ -30,7 +30,7 @@ class SubscriberSerializer(ModelSerializer):
     )
 
     person_degree = serializers.CharField(
-        source="person.student.branch.degree.name",
+        source="person.student.branch.name",
         read_only=True,
     )
 
@@ -40,7 +40,7 @@ class SubscriberSerializer(ModelSerializer):
     )
 
     person_department = serializers.CharField(
-        source="person.student.branch.name",
+        source="person.student.branch.department.name",
         read_only=True,
     )
 
