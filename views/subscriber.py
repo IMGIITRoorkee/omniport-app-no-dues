@@ -49,6 +49,7 @@ class SubscriberListView(ListAPIView):
                     subscriber_object['Name'] = name
                     subscriber_object['Branch'] = branch_name
                     subscriber_object['Department'] = department_name
+                    subscriber_object['Department Status'] = ''
                     department = 'Not Found'
                     bhawans = list()
                     for permission in subscriber.permissions.all():
@@ -61,7 +62,7 @@ class SubscriberListView(ListAPIView):
                             bhawans.append(f'{authority_name} - {status_display}')
                         else:
                             subscriber_object[authority_name] = status_display
-                    subscriber_object['Department'] = department
+                    subscriber_object['Department Status'] = department
                     subscriber_object['Bhawan'] = bhawans
                     subscriber_object['Final Status'] = \
                         'All Approved or Not Applicable' if no_due else 'Pending'

@@ -5,8 +5,8 @@ from rest_framework import routers
 from no_dues.views.permission import PermissionViewset
 from no_dues.views.profile import ProfileView
 from no_dues.views.comments import PermissionCommentViewSet
-from no_dues.views.subscriber_detail import SubscriberListView
-from no_dues.views.subscriber_detail import SubscriberDetailView
+from no_dues.views.subscriber import SubscriberListView
+from no_dues.views.subscriber import SubscriberDetailView
 from no_dues.views.mass_permission_status_update import (
     MassPermissionStatusUpdate
 )
