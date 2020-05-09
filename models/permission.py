@@ -1,6 +1,7 @@
 import swapper
 from django.db import models
 
+from kernel.managers.get_role import get_role
 from formula_one.models.base import Model
 from comments.mixins import CommentableMixin
 from no_dues.models import Subscriber, Authority
@@ -54,3 +55,20 @@ class Permission(CommentableMixin, Model):
         status = self.status
 
         return f'{authority}: {subscriber} ({status})'
+
+    @property
+    def latest_comment_by(self):
+        """
+        Return if the last comment was by a subscriber or verifier
+        :return: the string to represent if the latest comment by a 
+        subscriber or verifier
+        """
+
+        latest_comment = self.comments.last()
+        if latest_comment is not None:
+            commenter = latest_comment.commenter
+            return 'verifier' if get_role(commenter, 'no_dues.Verifier',
+                                          silent=True, is_custom_role=True) \
+                is not None else 'subscriber'
+
+        return ''

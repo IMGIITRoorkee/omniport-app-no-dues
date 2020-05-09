@@ -17,6 +17,9 @@ class PermissionBaseSerializer(ModelSerializer):
         read_only=True,
     )
     status_display_name = serializers.CharField(source='get_status_display')
+    latest_comment_by = serializers.CharField(
+        read_only=True,
+    )
 
     class Meta:
         """
@@ -34,6 +37,7 @@ class PermissionBaseSerializer(ModelSerializer):
             'authority',
             'status_display_name',
             'last_modified_by',
+            'latest_comment_by',
         ]
 
 
@@ -62,6 +66,7 @@ class PermissionListSerializer(PermissionBaseSerializer):
             'authority',
             'status_display_name',
             'last_modified_by',
+            'latest_comment_by',
         ]
 
 
@@ -90,4 +95,5 @@ class PermissionDetailSerializer(PermissionListSerializer):
             'authority',
             'status_display_name',
             'last_modified_by',
+            'latest_comment_by',
         ]
