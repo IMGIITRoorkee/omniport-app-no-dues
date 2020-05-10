@@ -50,6 +50,7 @@ class PermissionCommentViewSet(CommentViewSet):
 
                 if is_right_authority and mark_reported:
                     permission.status = REPORTED
+                    permission.last_modified_by = person.full_name
 
                 permission.comments.add(comment)
                 permission.save()
