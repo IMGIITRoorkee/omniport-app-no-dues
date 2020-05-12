@@ -37,7 +37,7 @@ class PermissionCommentViewSet(CommentViewSet):
 
         try:
             permission_id = request.data.pop('permission_id')[0]
-            mark_reported = request.data.get('mark_reported', [])[0]
+            mark_reported = request.data.get('mark_reported', [False])[0]
             person = request.person
             permission = Permission.objects.get(id=permission_id)
             is_right_authority = has_verification_rights_on_authority(
