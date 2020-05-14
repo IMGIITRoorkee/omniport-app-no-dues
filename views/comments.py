@@ -8,6 +8,7 @@ from no_dues.permissions import (
     has_verification_rights_on_authority, has_subscriber_rights,
     HasSubscriberRights, HasVerifierRights
 )
+from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_comment_notification import (
     send_comment_notification
 )
@@ -49,8 +50,15 @@ class PermissionCommentViewSet(CommentViewSet):
                 comment = serializer.save(commenter=person)
 
                 if is_right_authority and mark_reported:
+                    full_name = person.full_name
                     permission.status = REPORTED
-                    permission.last_modified_by = person.full_name
+                    permission.last_modified_by = full_name
+                    status_display_name = permission.get_status_display()
+
+                    # Add log for status update in form of a comment
+                    status_comment = log_status_update(
+                        status_display_name, person)
+                    permission.comments.add(status_comment)
 
                 permission.comments.add(comment)
                 permission.save()

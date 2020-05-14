@@ -12,6 +12,7 @@ from no_dues.models import Subscriber, Verifier, Permission
 from no_dues.permissions import (
     HasVerifierRights
 )
+from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_status_change_notification import (
     send_status_change_notification
 )
@@ -26,6 +27,7 @@ class MassPermissionStatusUpdate(APIView):
 
     def post(self, request):
         person = request.person
+        full_name = person.full_name
         verifier = get_role(person, 'no_dues.Verifier',
                             silent=True, is_custom_role=True)
         authority = verifier.authority
@@ -61,8 +63,15 @@ class MassPermissionStatusUpdate(APIView):
                 report.append(report_entity)
                 continue
             permission.status = status
-            permission.last_modified_by = person.full_name
+            permission.last_modified_by = full_name
+
+            # Add log for status update in form of a comment
+            status_display_name = permission.get_status_display()
+            comment = log_status_update(status_display_name, person)
+            permission.comments.add(comment)
+
             permission.save()
+
             send_status_change_notification(permission)
             report_entity['Status'] = 1
             report_entity['Info'] = 'Success'

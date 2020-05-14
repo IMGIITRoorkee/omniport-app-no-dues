@@ -14,6 +14,7 @@ from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
 )
 from no_dues.filters.permission import PermissionFilterSet
+from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_status_change_notification import (
     send_status_change_notification
 )
@@ -131,12 +132,19 @@ class PermissionViewset(ModelViewSet):
         """
 
         person = self.request.person
+        full_name = person.full_name
         serializer.save()
 
         instance = self.get_object()
+        status_display_name = instance.get_status_display()
         verifier = get_role(person, 'no_dues.Verifier',
                             silent=True, is_custom_role=True)
         if verifier:
-            instance.last_modified_by = person.full_name
+            instance.last_modified_by = full_name
             instance.save()
             send_status_change_notification(instance)
+
+        # Add log for status update in form of a comment
+        comment = log_status_update(status_display_name, person)
+        instance.comments.add(comment)
+        instance.save()
