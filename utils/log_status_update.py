@@ -10,7 +10,7 @@ def log_status_update(status_display_name, commenter):
     :return: A new comment instance
     """
     now = datetime.now()
-    datetime_string = now.strftime("at %H:%M:%S on %-d %b, %Y")
+    datetime_string = now.strftime("at %H:%M:%S hrs on %-d %b, %Y")
 
     full_name = commenter.full_name
 
