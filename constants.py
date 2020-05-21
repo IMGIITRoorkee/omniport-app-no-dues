@@ -50,6 +50,8 @@ INSTITUTE_SPORTS_ASSOCIATION = 'iso'
 THESIS_SUBMISSION_PROOF = 'tsp'
 ALUMNI_MEMBERSHIP_PROOF = 'amp'
 BANK_ACCOUNT_DETAILS = 'bad'
+FINANCE_SECTION = 'acad'
+ACADEMIC_SECTION = 'fin'
 
 OTHER_AUTHORITIES = (
     (LIBRARY, 'Central Library'),
@@ -62,4 +64,6 @@ OTHER_AUTHORITIES = (
     (THESIS_SUBMISSION_PROOF, 'Thesis Submission Proof'),
     (ALUMNI_MEMBERSHIP_PROOF, 'Alumni Membership Acknowledgement proof'),
     (BANK_ACCOUNT_DETAILS, 'Bank Account details'),
+    (FINANCE_SECTION, 'Finance Section'),
+    (ACADEMIC_SECTION, 'Academic Section'),
 )
