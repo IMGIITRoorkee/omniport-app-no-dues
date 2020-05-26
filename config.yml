@@ -1,7 +1,7 @@
 nomenclature:
   name: no_dues
   verboseName: No dues
-description: An app for Omniport that does what apps do
+description: Get your green card digitally without any red light
 baseUrls:
   http: no_dues/
   static: no_dues/
