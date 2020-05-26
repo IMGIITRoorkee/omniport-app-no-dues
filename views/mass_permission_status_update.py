@@ -16,6 +16,9 @@ from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_status_change_notification import (
     send_status_change_notification
 )
+from no_dues.utils.send_mass_change_report import (
+    send_mass_change_report
+)
 
 
 class MassPermissionStatusUpdate(APIView):
@@ -44,6 +47,7 @@ class MassPermissionStatusUpdate(APIView):
         report = list()
         for enrolment_number in enrolment_numbers:
             report_entity = dict()
+            report_entity['enrolment_number'] = enrolment_number
             try:
                 subscriber = Subscriber.objects.get(
                     person__student__enrolment_number=enrolment_number)
@@ -77,6 +81,8 @@ class MassPermissionStatusUpdate(APIView):
             report_entity['Info'] = 'Success'
             report.append(report_entity)
 
+        send_mass_change_report(
+            report, verifier, 'Approved' if status == APPROVED else 'Not Applicable')
         total = len(report)
         success = sum([report_entity['Status'] for report_entity in report])
         failed = total - success
