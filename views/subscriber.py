@@ -65,7 +65,7 @@ class SubscriberListView(ListAPIView):
                     subscriber_object['Department Status'] = department
                     subscriber_object['Bhawan'] = bhawans
                     subscriber_object['Final Status'] = \
-                        'All Approved or Not Applicable' if no_due else 'Pending'
+                        'All Approved, Not Applicable or Approved on Condition' if no_due else 'Pending'
                     subscriber_list.append(subscriber_object)
 
                 subscriber_list_df = pd.DataFrame(subscriber_list)

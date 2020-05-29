@@ -3,8 +3,8 @@ from no_dues.utils.send_notification import send_notification
 
 no_due_text = """
 <br><br>
-All of your no dues are either marked Approved or Not Applicable. You are now 
-eligible to obtain the final no dues slip. Log in to the Channel i to check 
+All of your no dues are either marked Approved, Not Applicable or Approved on Condiion. 
+You are now eligible to obtain the final no dues slip. Log in to the Channel i to check 
 the further process.
 """
 

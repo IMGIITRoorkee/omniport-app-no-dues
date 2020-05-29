@@ -21,9 +21,6 @@ from no_dues.utils.send_status_change_notification import (
 from no_dues.constants import (
     NOT_REQUESTED,
     REQUESTED,
-    REPORTED,
-    NOT_APPLICABLE,
-    APPROVED,
 )
 
 
@@ -76,8 +73,7 @@ class PermissionViewset(ModelViewSet):
                                 silent=True, is_custom_role=True)
             result = Permission.objects.filter(
                 Q(authority=verifier.authority) &
-                (Q(status=REQUESTED) | Q(status=REPORTED) | Q(
-                    status=APPROVED) | Q(status=NOT_APPLICABLE))
+                ~(Q(status=NOT_REQUESTED))
             ).order_by("-datetime_modified")
 
         return result

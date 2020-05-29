@@ -7,6 +7,7 @@ NOT_REQUESTED = 'nrq'
 REQUESTED = 'req'
 REPORTED = 'rep'
 NOT_APPLICABLE = 'nap'
+APPROVED_ON_CONDITION = 'apc'
 APPROVED = 'app'
 
 PERMISSION_STATUSES = (
@@ -14,8 +15,18 @@ PERMISSION_STATUSES = (
     (REQUESTED, 'Requested'),
     (REPORTED, 'Reported'),
     (NOT_APPLICABLE, 'Not Applicable'),
+    (APPROVED_ON_CONDITION, 'Approved On Condition'),
     (APPROVED, 'Approved'),
 )
+
+PERMISSION_STATUS_DICTIONARY = {
+    NOT_REQUESTED: 'Not Requested',
+    REQUESTED: 'Requested',
+    REPORTED: 'Reported',
+    NOT_APPLICABLE: 'Not Applicable',
+    APPROVED_ON_CONDITION: 'Approved On Condition',
+    APPROVED: 'Approved',
+} 
 
 # Residences
 RESIDENCES_EDITED_SLUG = [(f'{x[0]}_bhawan', x[1].strip()) for x in RESIDENCES]

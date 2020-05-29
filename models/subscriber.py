@@ -5,7 +5,7 @@ from django.db.models import Q
 from kernel.models.roles.base import AbstractRole
 from formula_one.utils.upload_to import UploadTo
 from no_dues.constants import (
-    APPROVED, NOT_APPLICABLE
+    APPROVED, NOT_APPLICABLE, APPROVED_ON_CONDITION
 )
 
 
@@ -40,6 +40,6 @@ class Subscriber(AbstractRole):
     def no_due(self):
         permissions = self.permissions
         due = permissions.filter(
-            ~(Q(status=APPROVED) | Q(status=NOT_APPLICABLE))).exists()
+            ~(Q(status=APPROVED) | Q(status=NOT_APPLICABLE) | Q(status=APPROVED_ON_CONDITION))).exists()
         no_due = not due
         return no_due
