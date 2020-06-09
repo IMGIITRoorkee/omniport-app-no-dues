@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from kernel.managers.get_role import get_role
-from no_dues.constants import RESIDENCES_EDITED_SLUG
+from no_dues.constants import RESIDENCES_EDITED_SLUG, MESS_EDITED_SLUG
 from no_dues.models import Permission, Authority
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.permissions import (
@@ -23,9 +23,12 @@ class SelectAuthorities(APIView):
     def options(self, request):
         residence_options = [{'slug': pair[0], 'name': pair[1]}
                              for pair in RESIDENCES_EDITED_SLUG]
+        mess_options = [{'slug': pair[0], 'name': pair[1]}
+                             for pair in MESS_EDITED_SLUG]
         return Response(
             data={
-                'residence_options': residence_options
+                'residence_options': residence_options,
+                'mess_options': mess_options
             },
             status=HTTP_200_OK
         )
@@ -35,6 +38,7 @@ class SelectAuthorities(APIView):
         subscriber = get_role(person, 'no_dues.Subscriber',
                               silent=True, is_custom_role=True)
         residences = request.data.get('residences', [])
+        mess = request.data.get('mess', '')
 
         if not residences:
             return Response(
@@ -50,9 +54,23 @@ class SelectAuthorities(APIView):
                         'Error': f'{residence} key not matched.'
                     }, status=HTTP_400_BAD_REQUEST,
                 )
+        
+        if mess and not [item for item in MESS_EDITED_SLUG if f'{item[0]}' == mess]:
+                return Response(
+                    data={
+                        'Error': f'{mess} key not matched.'
+                    }, status=HTTP_400_BAD_REQUEST,
+                )
 
         for residence in residences:
             authority = Authority.objects.get(slug=residence)
+            permission, _ = Permission.objects.get_or_create(
+                subscriber=subscriber,
+                authority=authority,
+            )
+        
+        if mess:
+            authority = Authority.objects.get(slug=mess)
             permission, _ = Permission.objects.get_or_create(
                 subscriber=subscriber,
                 authority=authority,

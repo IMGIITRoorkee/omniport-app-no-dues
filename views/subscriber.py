@@ -34,7 +34,7 @@ class SubscriberListView(ListAPIView):
             if download == 'xlsx':
 
                 subscriber_list = list()
-                subscribers = Subscriber.objects.all()
+                subscribers = Subscriber.objects.exclude(id_card='')
                 for subscriber in subscribers:
                     person = subscriber.person
                     student = person.student
@@ -60,10 +60,13 @@ class SubscriberListView(ListAPIView):
                             department = status_display
                         elif '_bhawan' in authority_slug:
                             bhawans.append(f'{authority_name} - {status_display}')
+                        elif '_mess' in authority_slug:
+                            mess = f'{authority_name} - {status_display}'
                         else:
                             subscriber_object[authority_name] = status_display
                     subscriber_object['Department Status'] = department
                     subscriber_object['Bhawan'] = bhawans
+                    subscriber_object['Mess'] = mess
                     subscriber_object['Final Status'] = \
                         'All Approved, Not Applicable or Approved on Condition' if no_due else 'Pending'
                     subscriber_list.append(subscriber_object)

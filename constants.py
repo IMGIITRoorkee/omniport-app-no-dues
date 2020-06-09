@@ -1,4 +1,3 @@
-from shell.constants.residences import RESIDENCES
 from shell.constants.departments import DEPARTMENTS
 from shell.constants.centres import CENTRES
 
@@ -29,7 +28,41 @@ PERMISSION_STATUS_DICTIONARY = {
 } 
 
 # Residences
-RESIDENCES_EDITED_SLUG = [(f'{x[0]}_bhawan', x[1].strip()) for x in RESIDENCES]
+RESIDENCES_EDITED_SLUG = [('azb_bhawan', 'Azad bhawan'),
+ ('ctb_bhawan', 'Cautley bhawan'),
+ ('gnb_bhawan', 'Ganga bhawan'),
+ ('gvb_bhawan', 'Govind bhawan'),
+ ('jlb_bhawan', 'Jawahar bhawan'),
+ ('mvb_bhawan', 'Malviya bhawan'),
+ ('rkb_bhawan', 'Radhakrishnan bhawan'),
+ ('rjb_bhawan', 'Rajendra bhawan'),
+ ('rgb_bhawan', 'Rajiv bhawan'),
+ ('rvb_bhawan', 'Ravindra bhawan'),
+ ('snb_bhawan', 'Sarojini bhawan'),
+ ('kgb_bhawan', 'Kasturba bhawan'),
+ ('igb_bhawan', 'Indira bhawan'),
+ ('mar_bhawan', 'Married Hostels (G.P., M.R. Chopra, Azad Wing, D.S. Barrack)'),
+ ('khs_bhawan', 'Khosla international house & A.N. Khosla house'),
+ ('vigb_bhawan', 'Vigyan kunj (Boys)'),
+ ('vigg_bhawan', 'Vigyan kunj (Girls)')
+]
+
+# Mess
+MESS_EDITED_SLUG = [('azb_mess', 'Azad bhawan mess'),
+ ('ctb_mess', 'Cautley bhawan mess'),
+ ('gnb_mess', 'Ganga bhawan mess'),
+ ('gvb_mess', 'Govind bhawan mess'),
+ ('jlb_mess', 'Jawahar bhawan mess'),
+ ('mvb_mess', 'Malviya bhawan mess'),
+ ('rkb_mess', 'Radhakrishnan bhawan mess'),
+ ('rjb_mess', 'Rajendra bhawan mess'),
+ ('rgb_mess', 'Rajiv bhawan mess'),
+ ('rvb_mess', 'Ravindra bhawan mess'),
+ ('snb_mess', 'Sarojini bhawan mess'),
+ ('kgb_mess', 'Kasturba bhawan mess'),
+ ('igb_mess', 'Indira bhawan mess'),
+ ('vig_mess', 'Vigyan kunj mess')
+]
 
 # Departments
 DEPARTMENTS_EDITED_SLUG = [(f'{x[0]}_department', x[1].strip()) for x in DEPARTMENTS]
