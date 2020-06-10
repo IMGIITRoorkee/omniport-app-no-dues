@@ -92,7 +92,7 @@ HOSPITAL_BOOKLET_CANCELLATION = 'hbc'
 INSTITUTE_COMPUTER_Centre = 'icc'
 INSTITUTE_SPORTS_ASSOCIATION = 'iso'
 THESIS_SUBMISSION_PROOF = 'tsp'
-ALUMNI_MEMBERSHIP_PROOF = 'amp'
+DORA_OFFICE = 'dor'
 BANK_ACCOUNT_DETAILS = 'bad'
 FINANCE_SECTION = 'fin'
 ACADEMIC_SECTION = 'acad'
@@ -106,7 +106,7 @@ OTHER_AUTHORITIES = (
     (HOSPITAL_BOOKLET_CANCELLATION, 'Hospital Booklet Cancellation'),
     (INSTITUTE_SPORTS_ASSOCIATION, 'Institute Sports Association'),
     (THESIS_SUBMISSION_PROOF, 'Thesis Submission Proof'),
-    (ALUMNI_MEMBERSHIP_PROOF, 'Alumni Membership Acknowledgement proof'),
+    (DORA_OFFICE, 'DORA Office'),
     (BANK_ACCOUNT_DETAILS, 'Bank Account details'),
     (FINANCE_SECTION, 'Finance Section'),
     (ACADEMIC_SECTION, 'Academic Section'),
