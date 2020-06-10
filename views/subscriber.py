@@ -51,6 +51,7 @@ class SubscriberListView(ListAPIView):
                     subscriber_object['Department'] = department_name
                     subscriber_object['Department Status'] = ''
                     department = 'Not Found'
+                    mess = 'No Mess'
                     bhawans = list()
                     for permission in subscriber.permissions.all():
                         authority_slug = permission.authority.slug
