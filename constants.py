@@ -72,13 +72,15 @@ CENTRES_EDITED_SLUG = [(f'{x[0]}_centre', x[1].strip()) for x in CENTRES]
 NSS = 'nss'
 NCC = 'ncc'
 HEC = 'hec'
-HOBBIES_CLUB = 'hoc'
+STUDENTS_TECHNICAL_COUNCIL = 'stc'
+CULTURAL_COUNCIL = 'cuc'
 
 CLUBS = (
     (NSS, 'National Service Scheme'),
     (NCC, 'National Cadet Corps'),
     (HEC, 'Himalayan Explorer\'s Club'),
-    (HOBBIES_CLUB, 'Hobbies Club')
+    (STUDENTS_TECHNICAL_COUNCIL, 'Students Technical Council'),
+    (CULTURAL_COUNCIL, 'Cultural Council')
 )
 
 # Other authorities
