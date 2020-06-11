@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.status import (
     HTTP_403_FORBIDDEN, HTTP_202_ACCEPTED
 )
@@ -20,6 +22,7 @@ from no_dues.utils.send_mass_change_report import (
     send_mass_change_report
 )
 
+logger = logging.getLogger('no_dues.views.mass_permission_status_update')
 
 class MassPermissionStatusUpdate(APIView):
     """
@@ -38,12 +41,14 @@ class MassPermissionStatusUpdate(APIView):
         status = request.data.get('status', '')
 
         if status not in [APPROVED, NOT_APPLICABLE, APPROVED_ON_CONDITION, REPORTED]:
+            logger.warn(f'{person.user.username} tried to change the no dues to a not allowed status {status}')
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
                 }, status=HTTP_403_FORBIDDEN,
             )
 
+        logger.info(f'{person.user.username} started a mass status update to {status}')
         report = list()
         for enrolment_number in enrolment_numbers:
             report_entity = dict()
@@ -86,6 +91,7 @@ class MassPermissionStatusUpdate(APIView):
         total = len(report)
         success = sum([report_entity['Status'] for report_entity in report])
         failed = total - success
+        logger.info(f'Mass status update by {person.user.username} completed')
         return Response(
             data={
                 'total': total,

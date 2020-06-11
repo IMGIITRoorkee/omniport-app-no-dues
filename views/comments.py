@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -14,6 +16,7 @@ from no_dues.utils.send_comment_notification import (
 )
 from no_dues.constants import REPORTED
 
+logger = logging.getLogger('no_dues.views.comments')
 
 class PermissionCommentViewSet(CommentViewSet):
     """
@@ -48,12 +51,16 @@ class PermissionCommentViewSet(CommentViewSet):
                 serializer = self.get_serializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
                 comment = serializer.save(commenter=person)
+                
+                logger.info(f'{request.user.username} commented on a no due')
 
                 if is_right_authority and mark_reported:
                     full_name = person.full_name
                     permission.status = REPORTED
                     permission.last_modified_by = full_name
                     status_display_name = permission.get_status_display()
+
+                    logger.info(f'{request.user.username} commented and reported on a no due')
 
                     # Add log for status update in form of a comment
                     status_comment = log_status_update(
@@ -74,6 +81,7 @@ class PermissionCommentViewSet(CommentViewSet):
                 )
 
         except KeyError:
+            logger.warn('f{request.user.username} sent a comment request in wrong format')
             return Response(
                 data={
                     'Error': 'Missing permission_id attribute.'
@@ -82,6 +90,7 @@ class PermissionCommentViewSet(CommentViewSet):
             )
 
         except Permission.DoesNotExist:
+            logger.warn('f{request.user.username} tried to comment on a non-existing permission')
             return Response(
                 data={
                     'Error': 'Requested resource does not exist.'

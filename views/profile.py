@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework.generics import RetrieveUpdateAPIView
 
 from kernel.managers.get_role import get_role
@@ -8,6 +10,7 @@ from no_dues.permissions import (
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.serializers.verifier import VerifierSerializer
 
+logger = logging.getLogger('no_dues.views.profile')
 
 class ProfileView(RetrieveUpdateAPIView):
     """
@@ -39,9 +42,11 @@ class ProfileView(RetrieveUpdateAPIView):
         person = self.request.person
         instance = None
         if is_subscriber(person):
+            logger.info(f'{person.user.username} requested profile information as subscriber')
             instance = get_role(person, 'no_dues.Subscriber',
                                 silent=True, is_custom_role=True)
         elif has_verifier_rights(person):
+            logger.info(f'{person.user.username} requested profile information as verifier')
             instance = get_role(person, 'no_dues.Verifier',
                                 silent=True, is_custom_role=True)
 

@@ -1,3 +1,5 @@
+import logging
+
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
@@ -23,6 +25,7 @@ from no_dues.constants import (
     REQUESTED,
 )
 
+logger = logging.getLogger('no_dues.views.permission')
 
 class PermissionViewset(ModelViewSet):
     """
@@ -66,9 +69,11 @@ class PermissionViewset(ModelViewSet):
         result = []
         person = self.request.person
         if has_subscriber_rights(person):
+            logger.info(f'{person.user.username} get its permission list')
             result = Permission.objects.filter(
                 subscriber__person=person).order_by('authority')
         elif has_verifier_rights(person):
+            logger.info(f'{person.user.username} gets all the no dues for its authority')
             verifier = get_role(person, 'no_dues.Verifier',
                                 silent=True, is_custom_role=True)
             result = Permission.objects.filter(
@@ -94,6 +99,7 @@ class PermissionViewset(ModelViewSet):
         instance = self.get_object()
         request_keys = request.data.keys()
         if 'status' not in request_keys:
+            logger.warn(f'{person.user.username} tried to change the status in wrong format')
             return Response(
                 data={
                     'Error': 'Missing required argument status.'
@@ -103,6 +109,7 @@ class PermissionViewset(ModelViewSet):
         if has_subscriber_rights(person) and \
                 (instance.status != NOT_REQUESTED or
                  request.data['status'] != REQUESTED):
+            logger.warn(f'{person.user.username} tried to change its no dues status which is not allowed')
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
@@ -112,6 +119,7 @@ class PermissionViewset(ModelViewSet):
         elif has_verifier_rights(request.person) and \
                 (request.data['status'] in [NOT_REQUESTED, REQUESTED] or
                  instance.status in [NOT_REQUESTED]):
+            logger.warn(f'{person.user.username} tried to change the status of a subscriber which is not allowed')
             return Response(
                 data={
                     'Error': 'You cannot perform this operation.'
@@ -119,6 +127,7 @@ class PermissionViewset(ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        logger.info(f'{person.user.username} changed the status of the permission object')
         return super(PermissionViewset, self).partial_update(request, *args, **kwargs)
 
     def perform_update(self, serializer):

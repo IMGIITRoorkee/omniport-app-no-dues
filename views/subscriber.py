@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 from django.http import HttpResponse
 from rest_framework.generics import (
@@ -13,6 +15,7 @@ from no_dues.permissions import (
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.serializers.subscriber_detail import SubscriberDetailSerializer
 
+logger = logging.getLogger('no_dues.views.subscriber')
 
 class SubscriberListView(ListAPIView):
     """
@@ -29,9 +32,12 @@ class SubscriberListView(ListAPIView):
         return subscribers
 
     def list(self, request, *args, **kwargs):
+        username = request.user.username
         try:
             download = request.query_params.get('download', '')
             if download == 'xlsx':
+                
+                logger.info(f'{username} requested for the subscribers data')
 
                 subscriber_list = list()
                 subscribers = Subscriber.objects.exclude(id_card='')
@@ -79,10 +85,13 @@ class SubscriberListView(ListAPIView):
                 subscriber_list_df = subscriber_list_df.fillna('Not Required')
                 subscriber_list_df.to_csv(
                     path_or_buf=response, index=False, header=True)
+
+                logger.info(f'{username} successfully get the subscribers data')
+
                 return response
 
         except KeyError:
-            pass
+            logger.error(f'{username} got a keyerror while getting the subscriber data')
 
         return super(SubscriberListView, self).list(self, request, *args, **kwargs)
 
@@ -100,4 +109,5 @@ class SubscriberDetailView(RetrieveAPIView):
         enrolment_number = self.kwargs.get(self.lookup_url_kwarg)
         subscriber = get_object_or_404(
             Subscriber, person__student__enrolment_number=enrolment_number)
+        logger.info('f{self.request.user.username} retrieved the details for {enrolment_number}')
         return subscriber
