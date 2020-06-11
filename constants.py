@@ -50,17 +50,15 @@ RESIDENCES_EDITED_SLUG = [('azb_bhawan', 'Azad bhawan'),
 # Mess
 MESS_EDITED_SLUG = [('azb_mess', 'Azad bhawan mess'),
  ('ctb_mess', 'Cautley bhawan mess'),
- ('gnb_mess', 'Ganga bhawan mess'),
  ('gvb_mess', 'Govind bhawan mess'),
  ('jlb_mess', 'Jawahar bhawan mess'),
- ('mvb_mess', 'Malviya bhawan mess'),
  ('rkb_mess', 'Radhakrishnan bhawan mess'),
  ('rjb_mess', 'Rajendra bhawan mess'),
  ('rgb_mess', 'Rajiv bhawan mess'),
  ('rvb_mess', 'Ravindra bhawan mess'),
  ('snb_mess', 'Sarojini bhawan mess'),
  ('kgb_mess', 'Kasturba bhawan mess'),
- ('igb_mess', 'Indira bhawan mess'),
+ ('mvigb_mess', 'Malviya & Indira bhawan mess'),
  ('vig_mess', 'Vigyan kunj mess')
 ]
 
