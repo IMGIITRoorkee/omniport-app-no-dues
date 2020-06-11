@@ -71,14 +71,12 @@ CENTRES_EDITED_SLUG = [(f'{x[0]}_centre', x[1].strip()) for x in CENTRES]
 # Clubs
 NSS = 'nss'
 NCC = 'ncc'
-NSO = 'nso'
 HEC = 'hec'
 HOBBIES_CLUB = 'hoc'
 
 CLUBS = (
     (NSS, 'National Service Scheme'),
     (NCC, 'National Cadet Corps'),
-    (NSO, 'National Sports Organisation'),
     (HEC, 'Himalayan Explorer\'s Club'),
     (HOBBIES_CLUB, 'Hobbies Club')
 )
@@ -99,7 +97,7 @@ OTHER_AUTHORITIES = (
     (INSTITUTE_COMPUTER_Centre, 'Institute Computer Centre'),
     (INSTITUTE_COMPUTER_Centre, 'Institute Computer Centre'),
     (HOSPITAL_BOOKLET_CANCELLATION, 'Hospital Booklet Cancellation'),
-    (INSTITUTE_SPORTS_ASSOCIATION, 'Institute Sports Association'),
+    (INSTITUTE_SPORTS_ASSOCIATION, 'Institute Sports Association & National Sports Organisation'),
     (DORA_OFFICE, 'DORA Office'),
     (FINANCE_SECTION, 'Finance Section'),
     (ACADEMIC_SECTION, 'Academic Section'),
