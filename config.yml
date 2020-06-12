@@ -9,4 +9,6 @@ isApi: true
 acceptables:
   roles:
   - name: no_dues.Subscriber
+    activeStatuses:
+    - IS_ACTIVE
   - name: no_dues.Verifier
