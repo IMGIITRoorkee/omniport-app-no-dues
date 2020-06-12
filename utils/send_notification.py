@@ -44,6 +44,7 @@ def send_notification(subject_text, body_text, front_path, to_authority, subscri
         persons = list()
         persons.append(subscriber_person_id)
 
+    subject_text = f'[No Dues] {subject_text}'
     full_path = f'https://newchanneli.iitr.ac.in/?next=/{front_path}'
 
     try:

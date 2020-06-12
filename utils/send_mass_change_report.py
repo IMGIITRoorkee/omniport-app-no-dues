@@ -30,7 +30,7 @@ def send_mass_change_report(report, verifier, update):
         'person_id', flat=True).distinct())
 
     full_path = f'https://newchanneli.iitr.ac.in/?next=/no_dues'
-    subject_text = 'Mass update report'
+    subject_text = '[No Dues] Mass update report'
 
     body_text = """Hello,
     The following is the mass update report updated by {} to the status {}.
