@@ -63,7 +63,7 @@ class SubscriberListView(ListAPIView):
                         authority_slug = permission.authority.slug
                         authority_name = permission.authority.full_name
                         status_display = permission.get_status_display()
-                        if '_department' in authority_slug:
+                        if '_department' in authority_slug or '_centre' in authority_slug:
                             department = status_display
                         elif '_bhawan' in authority_slug:
                             bhawans.append(f'{authority_name} - {status_display}')
