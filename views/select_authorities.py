@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from kernel.managers.get_role import get_role
-from no_dues.constants import RESIDENCES_EDITED_SLUG, MESS_EDITED_SLUG
+from no_dues.constants import RESIDENCES_EDITED_SLUG, MESS_EDITED_SLUG, APPROVED
 from no_dues.models import Permission, Authority
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.permissions import (
@@ -41,8 +41,8 @@ class SelectAuthorities(APIView):
         person = request.person
         subscriber = get_role(person, 'no_dues.Subscriber',
                               silent=True, is_custom_role=True)
-        residences = request.data.get('residences', [])
-        mess = request.data.get('mess', '')
+        residences = request.data.get('residences', ['null_bhawan'])
+        mess = request.data.get('mess', 'null_mess')
         logger.info(f'{request.user.username} requested to select authorities')
 
         if not residences:
@@ -76,6 +76,9 @@ class SelectAuthorities(APIView):
                 subscriber=subscriber,
                 authority=authority,
             )
+            if residence == 'null_bhawan':
+                permission.status = APPROVED
+                permission.save()
         
         if mess:
             authority = Authority.objects.get(slug=mess)
@@ -83,6 +86,9 @@ class SelectAuthorities(APIView):
                 subscriber=subscriber,
                 authority=authority,
             )
+            if mess == 'null_mess':
+                permission.status = APPROVED
+                permission.save()
 
         subscriber.required_authorities_selected = True
         subscriber.save()
