@@ -59,12 +59,12 @@ class Permission(CommentableMixin, Model):
     @property
     def latest_comment_by(self):
         """
-        Return if the last comment was by a subscriber or verifier
+        Return if the last non-status change comment was by a subscriber or verifier
         :return: the string to represent if the latest comment by a 
         subscriber or verifier
         """
 
-        latest_comment = self.comments.last()
+        latest_comment = self.comments.exclude(text__startswith='Status changed').last()
         if latest_comment is not None:
             commenter = latest_comment.commenter
             return 'verifier' if get_role(commenter, 'no_dues.Verifier',

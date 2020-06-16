@@ -50,7 +50,6 @@ class PermissionCommentViewSet(CommentViewSet):
             if is_right_authority or permission.subscriber.person == person:
                 serializer = self.get_serializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
-                comment = serializer.save(commenter=person)
                 
                 logger.info(f'{request.user.username} commented on a no due')
 
@@ -67,6 +66,7 @@ class PermissionCommentViewSet(CommentViewSet):
                         status_display_name, person)
                     permission.comments.add(status_comment)
 
+                comment = serializer.save(commenter=person)
                 permission.comments.add(comment)
                 permission.save()
                 send_comment_notification(
