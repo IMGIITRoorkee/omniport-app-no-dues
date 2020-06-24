@@ -8,12 +8,15 @@ from rest_framework.generics import (
 from rest_framework import status
 from rest_framework.response import Response
 
-from no_dues.models import Subscriber, Verifier
+from no_dues.models import Subscriber, Verifier, Permission
 from no_dues.permissions import (
     HasVerifierRights
 )
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.serializers.subscriber_detail import SubscriberDetailSerializer
+from no_dues.utils.beautify_dataframe import (
+    beautify_mass_dataframe, beautify_subscriber_dataframe, delete_extra_columns
+)
 
 logger = logging.getLogger('no_dues.views.subscriber')
 
@@ -39,51 +42,41 @@ class SubscriberListView(ListAPIView):
                 
                 logger.info(f'{username} requested for the subscribers data')
 
-                subscriber_list = list()
+                permissions = Permission.objects.exclude(subscriber__id_card='')
                 subscribers = Subscriber.objects.exclude(id_card='')
-                for subscriber in subscribers:
-                    person = subscriber.person
-                    student = person.student
-                    enrolment_number = student.enrolment_number
-                    name = person.full_name
-                    branch_name = student.branch.name
-                    department_name = student.branch.department.name
-                    no_due = subscriber.no_due
 
-                    subscriber_object = dict()
-                    subscriber_object['Enrolment Number'] = enrolment_number
-                    subscriber_object['Name'] = name
-                    subscriber_object['Branch'] = branch_name
-                    subscriber_object['Department'] = department_name
-                    subscriber_object['Department Status'] = ''
-                    department = 'Not Found'
-                    mess = 'No Mess'
-                    bhawans = list()
-                    for permission in subscriber.permissions.all():
-                        authority_slug = permission.authority.slug
-                        authority_name = permission.authority.full_name
-                        status_display = permission.get_status_display()
-                        if '_department' in authority_slug or '_centre' in authority_slug:
-                            department = status_display
-                        elif '_bhawan' in authority_slug:
-                            bhawans.append(f'{authority_name} - {status_display}')
-                        elif '_mess' in authority_slug:
-                            mess = f'{authority_name} - {status_display}'
-                        else:
-                            subscriber_object[authority_name] = status_display
-                    subscriber_object['Department Status'] = department
-                    subscriber_object['Bhawan'] = bhawans
-                    subscriber_object['Mess'] = mess
-                    subscriber_object['Final Status'] = \
-                        'All Approved, Not Applicable or Approved on Condition' if no_due else 'Pending'
-                    subscriber_list.append(subscriber_object)
+                permissions_df = pd.DataFrame(list(permissions.values(
+                    'authority__full_name', 'status', 'subscriber__person__student__enrolment_number')))
+                subscribers_df = pd.DataFrame(list(subscribers.values( 
+                    'person__full_name', 'person__student__enrolment_number', 'person__student__branch__name',
+                    'person__student__branch__entity_content_type_id', 'person__student__branch__entity_object_id')))
 
-                subscriber_list_df = pd.DataFrame(subscriber_list)
+                subscribers_df = subscribers_df.apply(beautify_subscriber_dataframe, axis=1)
+                del subscribers_df['person__student__branch__entity_object_id']
+                del subscribers_df['person__student__branch__entity_content_type_id']
+                subscribers_df.rename(columns={
+                    'person__full_name': 'Name',
+                    'person__student__enrolment_number': 'Enrolment No.',
+                    'person__student__branch__name': 'Branch'
+                }, inplace=True)
+
+                permissions_df=pd.pivot(permissions_df, index='subscriber__person__student__enrolment_number', 
+                                        columns='authority__full_name', values='status')
+                permissions_df = permissions_df.reset_index()
+                permissions_df = pd.merge(permissions_df, subscribers_df, 
+                                          how='left', left_on='subscriber__person__student__enrolment_number',
+                                          right_on='Enrolment No.')
+                permissions_df.rename(columns={
+                    'subscriber__person__student__enrolment_number': 'Enrolment No.',
+                }, inplace=True)
+                permissions_df = permissions_df.fillna('nreq')
+                permissions_df = permissions_df.apply(beautify_mass_dataframe, axis=1)
+                permissions_df = delete_extra_columns(permissions_df)
+
                 filename = 'Final_year_students.csv'
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = f'attachment; filename={filename}'
-                subscriber_list_df = subscriber_list_df.fillna('Not Required')
-                subscriber_list_df.to_csv(
+                permissions_df.to_csv(
                     path_or_buf=response, index=False, header=True)
 
                 logger.info(f'{username} successfully get the subscribers data')
