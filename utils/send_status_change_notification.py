@@ -2,10 +2,12 @@ from no_dues.utils.send_notification import send_notification
 
 
 no_due_text = """
-<br><br>
-All of your no dues are either marked Approved, Not Applicable or Approved on Condiion. 
-You are now eligible to obtain the final no dues slip. Log in to the Channel i to check 
-the further process.
+Hey {},
+<br /><br />
+All of your no dues are either marked Approved, Not Applicable or Approved on Condition.
+You have obtained the no dues slip from all of the required departments/sections. The
+Academic section has been intimated. All the further process will be handled by the Academic
+section itself.
 """
 
 
@@ -25,8 +27,12 @@ def send_status_change_notification(permission):
     subject_text = f'{authority_full_name} has marked your no dues to {status_display}'
     body_text = f'{authority_full_name} has changed the status of your no dues to {status_display}.'
 
-    if no_due:
-        body_text = body_text + no_due_text
-
     send_notification(subject_text, body_text,
                       front_path, False, subscriber, None)
+
+    if no_due:
+        subject_text = 'Congratulations! You have obtained all the required no dues.'
+        send_notification(
+            subject_text, no_due_text.format(subscriber.person.full_name),
+            front_path, False, subscriber, None
+        )
