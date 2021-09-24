@@ -1,6 +1,7 @@
 import logging
 
 import pandas as pd
+from django.db.models import F, Q
 from django.http import HttpResponse
 from rest_framework.generics import (
     ListAPIView, RetrieveAPIView, get_object_or_404
@@ -42,8 +43,12 @@ class SubscriberListView(ListAPIView):
                 
                 logger.info(f'{username} requested for the subscribers data')
 
-                permissions = Permission.objects.exclude(subscriber__id_card='')
-                subscribers = Subscriber.objects.exclude(id_card='')
+                permissions_query = Q(subscriber__id_card='') \
+                    | Q(subscriber__person__student__current_semester__gt=F('subscriber__person__student__branch__semester_count'))
+                subscribers_query = Q(id_card='') \
+                    | Q(person__student__current_semester__gt=F('person__student__branch__semester_count'))
+                permissions = Permission.objects.exclude(permissions_query)
+                subscribers = Subscriber.objects.exclude(subscribers_query)
 
                 permissions_df = pd.DataFrame(list(permissions.values(
                     'authority__full_name', 'status', 'subscriber__person__student__enrolment_number')))
