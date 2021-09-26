@@ -1,4 +1,6 @@
 import logging
+from datetime import datetime
+import pytz
 
 import pandas as pd
 from django.db.models import F, Q
@@ -39,50 +41,49 @@ class SubscriberListView(ListAPIView):
         username = request.user.username
         try:
             download = request.query_params.get('download', '')
+            year = request.query_params.get('year', datetime.now().year)
+            start_date = datetime(year=int(year)-1,month=4,day=1,tzinfo=pytz.UTC)
+            end_date = datetime(year=int(year),month=4,day=1,tzinfo=pytz.UTC)
             if download == 'xlsx':
                 
                 logger.info(f'{username} requested for the subscribers data')
 
-                permissions_query = Q(subscriber__id_card='') \
-                    | Q(subscriber__person__student__current_semester__gt=F('subscriber__person__student__branch__semester_count'))
-                subscribers_query = Q(id_card='') \
-                    | Q(person__student__current_semester__gt=F('person__student__branch__semester_count'))
-                permissions = Permission.objects.exclude(permissions_query)
-                subscribers = Subscriber.objects.exclude(subscribers_query)
+                permissions = Permission.objects.filter(Q(datetime_created__gt=start_date) & Q(datetime_created__lt=end_date))
+                subscribers = Subscriber.objects.filter(Q(datetime_created__gt=start_date) & Q(datetime_created__lt=end_date))
 
-                permissions_df = pd.DataFrame(list(permissions.values(
-                    'authority__full_name', 'status', 'subscriber__person__student__enrolment_number')))
-                subscribers_df = pd.DataFrame(list(subscribers.values( 
-                    'person__full_name', 'person__student__enrolment_number', 'person__student__branch__name',
-                    'person__student__branch__entity_content_type_id', 'person__student__branch__entity_object_id')))
-
-                subscribers_df = subscribers_df.apply(beautify_subscriber_dataframe, axis=1)
-                del subscribers_df['person__student__branch__entity_object_id']
-                del subscribers_df['person__student__branch__entity_content_type_id']
-                subscribers_df.rename(columns={
-                    'person__full_name': 'Name',
-                    'person__student__enrolment_number': 'Enrolment No.',
-                    'person__student__branch__name': 'Branch'
-                }, inplace=True)
-
-                permissions_df=pd.pivot(permissions_df, index='subscriber__person__student__enrolment_number', 
-                                        columns='authority__full_name', values='status')
-                permissions_df = permissions_df.reset_index()
-                permissions_df = pd.merge(permissions_df, subscribers_df, 
-                                          how='left', left_on='subscriber__person__student__enrolment_number',
-                                          right_on='Enrolment No.')
-                permissions_df.rename(columns={
-                    'subscriber__person__student__enrolment_number': 'Enrolment No.',
-                }, inplace=True)
-                permissions_df = permissions_df.fillna('nreq')
-                permissions_df = permissions_df.apply(beautify_mass_dataframe, axis=1)
-                permissions_df = delete_extra_columns(permissions_df)
-
-                filename = 'Final_year_students.csv'
+                filename = year+'_students.csv'
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = f'attachment; filename={filename}'
-                permissions_df.to_csv(
-                    path_or_buf=response, index=False, header=True)
+                if permissions.count() and subscribers.count():
+                    permissions_df = pd.DataFrame(list(permissions.values(
+                        'authority__full_name', 'status', 'subscriber__person__student__enrolment_number')))
+                    subscribers_df = pd.DataFrame(list(subscribers.values( 
+                        'person__full_name', 'person__student__enrolment_number', 'person__student__branch__name',
+                        'person__student__branch__entity_content_type_id', 'person__student__branch__entity_object_id')))
+
+                    subscribers_df = subscribers_df.apply(beautify_subscriber_dataframe, axis=1)
+                    del subscribers_df['person__student__branch__entity_object_id']
+                    del subscribers_df['person__student__branch__entity_content_type_id']
+                    subscribers_df.rename(columns={
+                        'person__full_name': 'Name',
+                        'person__student__enrolment_number': 'Enrolment No.',
+                        'person__student__branch__name': 'Branch'
+                    }, inplace=True)
+
+                    permissions_df=pd.pivot(permissions_df, index='subscriber__person__student__enrolment_number', 
+                                            columns='authority__full_name', values='status')
+                    permissions_df = permissions_df.reset_index()
+                    permissions_df = pd.merge(permissions_df, subscribers_df, 
+                                            how='left', left_on='subscriber__person__student__enrolment_number',
+                                            right_on='Enrolment No.')
+                    permissions_df.rename(columns={
+                        'subscriber__person__student__enrolment_number': 'Enrolment No.',
+                    }, inplace=True)
+                    permissions_df = permissions_df.fillna('nreq')
+                    permissions_df = permissions_df.apply(beautify_mass_dataframe, axis=1)
+                    permissions_df = delete_extra_columns(permissions_df)
+                    permissions_df.to_csv(
+                        path_or_buf=response, index=False, header=True)
 
                 logger.info(f'{username} successfully get the subscribers data')
 
