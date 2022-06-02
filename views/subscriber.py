@@ -80,6 +80,7 @@ class SubscriberListView(ListAPIView):
                         'subscriber__person__student__enrolment_number': 'Enrolment No.',
                     }, inplace=True)
                     permissions_df = permissions_df.fillna('nreq')
+                    permissions_df = permissions_df[permissions_df['Department']!='nreq']
                     permissions_df = permissions_df.apply(beautify_mass_dataframe, axis=1)
                     permissions_df = delete_extra_columns(permissions_df)
                     permissions_df.to_csv(
