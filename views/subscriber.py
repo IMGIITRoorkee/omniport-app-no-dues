@@ -41,10 +41,12 @@ class SubscriberListView(ListAPIView):
         username = request.user.username
         try:
             download = request.query_params.get('download', '')
+            nodue = request.query_params.get('nodue', 'false')
             year = request.query_params.get('year', datetime.now().year)
             start_date = datetime(year=int(year)-1,month=4,day=1,tzinfo=pytz.UTC)
             end_date = datetime(year=int(year),month=4,day=1,tzinfo=pytz.UTC)
-            if download == 'xlsx':
+
+            if download == 'xlsx' and nodue == 'false':
                 
                 logger.info(f'{username} requested for the subscribers data')
 
@@ -60,7 +62,6 @@ class SubscriberListView(ListAPIView):
                     subscribers_df = pd.DataFrame(list(subscribers.values( 
                         'person__full_name', 'person__student__enrolment_number', 'person__student__branch__name',
                         'person__student__branch__entity_content_type_id', 'person__student__branch__entity_object_id')))
-
                     subscribers_df = subscribers_df.apply(beautify_subscriber_dataframe, axis=1)
                     del subscribers_df['person__student__branch__entity_object_id']
                     del subscribers_df['person__student__branch__entity_content_type_id']
@@ -69,7 +70,6 @@ class SubscriberListView(ListAPIView):
                         'person__student__enrolment_number': 'Enrolment No.',
                         'person__student__branch__name': 'Branch'
                     }, inplace=True)
-
                     permissions_df=pd.pivot(permissions_df, index='subscriber__person__student__enrolment_number', 
                                             columns='authority__full_name', values='status')
                     permissions_df = permissions_df.reset_index()
@@ -85,8 +85,37 @@ class SubscriberListView(ListAPIView):
                     permissions_df = delete_extra_columns(permissions_df)
                     permissions_df.to_csv(
                         path_or_buf=response, index=False, header=True)
-
                 logger.info(f'{username} successfully get the subscribers data')
+
+                return response
+
+            elif download == 'xlsx' and nodue == 'true':
+
+                logger.info(f'{username} requested for the greencard holders data')
+
+                subscribers = [
+                    subscriber.id for subscriber in Subscriber.objects.all() if subscriber.no_due
+                ]
+                subscribers = Subscriber.objects.filter(id__in = subscribers)
+
+                filename = 'Greencard_Holders.csv'
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = f'attachment; filename={filename}'
+                if subscribers.__len__():
+                    subscribers_df = pd.DataFrame(list(subscribers.values( 
+                        'person__full_name', 'person__student__enrolment_number', 'person__student__branch__name',
+                        'person__student__branch__entity_content_type_id', 'person__student__branch__entity_object_id')))
+                    subscribers_df = subscribers_df.apply(beautify_subscriber_dataframe, axis=1)
+                    del subscribers_df['person__student__branch__entity_object_id']
+                    del subscribers_df['person__student__branch__entity_content_type_id']
+                    subscribers_df.rename(columns={
+                        'person__full_name': 'Name',
+                        'person__student__enrolment_number': 'Enrolment No.',
+                        'person__student__branch__name': 'Branch'
+                    }, inplace=True)
+                    subscribers_df.to_csv(
+                        path_or_buf=response, index=False, header=True)
+                logger.info(f'{username} successfully get the greencard holders data')
 
                 return response
 
