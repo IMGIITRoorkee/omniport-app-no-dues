@@ -15,6 +15,7 @@ from no_dues.models import Subscriber, Verifier, Permission
 from no_dues.permissions import (
     HasVerifierRights
 )
+from no_dues.pagination.pagination import StandardPagination
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.serializers.subscriber_detail import SubscriberDetailSerializer
 from no_dues.utils.beautify_dataframe import (
@@ -30,7 +31,7 @@ class SubscriberListView(ListAPIView):
 
     permission_classes = [HasVerifierRights, ]
     serializer_class = SubscriberSerializer
-    pagination_class = None
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         subscribers = [
