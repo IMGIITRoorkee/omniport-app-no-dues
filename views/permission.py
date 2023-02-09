@@ -16,6 +16,7 @@ from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
 )
 from no_dues.filters.permission import PermissionFilterSet
+from no_dues.pagination.pagination import StandardPagination
 from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_status_change_notification import (
     send_status_change_notification
@@ -40,7 +41,7 @@ class PermissionViewset(ModelViewSet):
         'options',
         'head',
     ]
-    pagination_class = None
+    pagination_class = StandardPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PermissionFilterSet
     search_fields = ['subscriber__person__student__enrolment_number']
