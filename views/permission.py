@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
@@ -81,6 +82,18 @@ class PermissionViewset(ModelViewSet):
                 Q(authority=verifier.authority) &
                 ~(Q(status=NOT_REQUESTED))
             ).order_by("-datetime_modified")
+            
+            data = self.request.query_params
+            if data.get('start') is not None:
+                start_date, end_date = data.get('start', None), data.get('end', None)
+
+                start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
+                end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+                end_date = datetime.datetime.combine(end_date, datetime.time.max)
+                result = result.filter(datetime_modified__range=(
+                    start_date,
+                    end_date
+                ))
 
         return result
 
