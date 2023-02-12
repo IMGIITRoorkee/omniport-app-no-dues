@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, time
 import pytz
 
 import pandas as pd
@@ -34,8 +34,21 @@ class SubscriberListView(ListAPIView):
     pagination_class = StandardPagination
 
     def get_queryset(self):
-        subscribers = [
-            subscriber for subscriber in Subscriber.objects.all() if subscriber.no_due]
+        data = self.request.query_params
+        start_date, end_date = data.get('start', None), data.get('end', None)
+        if start_date != 'undefined' and start_date is not None:
+
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            end_date = datetime.combine(end_date, time.max)
+            subscribers = [
+                subscriber for subscriber in Subscriber.objects.filter(datetime_modified__range=(start_date,end_date))
+                if subscriber.no_due
+            ]
+        else:
+            subscribers = [
+                subscriber for subscriber in Subscriber.objects.all() if subscriber.no_due]
+            
         return subscribers
 
     def list(self, request, *args, **kwargs):
