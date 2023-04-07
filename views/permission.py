@@ -17,7 +17,7 @@ from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
 )
 from no_dues.filters.permission import PermissionFilterSet
-from no_dues.pagination.pagination import StandardPagination
+from no_dues.pagination.pagination import StudentsPageNumberPagination
 from no_dues.utils.log_status_update import log_status_update
 from no_dues.utils.send_status_change_notification import (
     send_status_change_notification
@@ -42,7 +42,7 @@ class PermissionViewset(ModelViewSet):
         'options',
         'head',
     ]
-    pagination_class = StandardPagination
+    pagination_class = StudentsPageNumberPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PermissionFilterSet
     search_fields = ['subscriber__person__student__enrolment_number']
@@ -84,8 +84,8 @@ class PermissionViewset(ModelViewSet):
             ).order_by("-datetime_modified")
             
             data = self.request.query_params
-            if data.get('start') is not None:
-                start_date, end_date = data.get('start', None), data.get('end', None)
+            if data.get('start') is not None and data.get('end') is not None:
+                start_date, end_date = data.get('start'), data.get('end')
 
                 start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
                 end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
