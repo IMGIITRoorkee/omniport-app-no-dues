@@ -15,7 +15,7 @@ from no_dues.models import Subscriber, Verifier, Permission
 from no_dues.permissions import (
     HasVerifierRights
 )
-from no_dues.pagination.pagination import StandardPagination
+from no_dues.pagination.pagination import StudentsPageNumberPagination
 from no_dues.serializers.subscriber import SubscriberSerializer
 from no_dues.serializers.subscriber_detail import SubscriberDetailSerializer
 from no_dues.utils.beautify_dataframe import (
@@ -31,19 +31,27 @@ class SubscriberListView(ListAPIView):
 
     permission_classes = [HasVerifierRights, ]
     serializer_class = SubscriberSerializer
-    pagination_class = StandardPagination
+    pagination_class = StudentsPageNumberPagination
 
     def get_queryset(self):
         data = self.request.query_params
         start_date, end_date = data.get('start', None), data.get('end', None)
+        enrolment_no = data.get('enrolment_no', None)
         if start_date != 'undefined' and start_date is not None:
 
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             end_date = datetime.combine(end_date, time.max)
             subscribers = [
-                subscriber for subscriber in Subscriber.objects.filter(datetime_modified__range=(start_date,end_date))
-                if subscriber.no_due
+                subscriber for subscriber in Subscriber.objects.filter(
+                    datetime_modified__range=(start_date,end_date)
+                ) if subscriber.no_due
+            ]
+        elif enrolment_no != '':
+            subscribers = [
+                subscriber for subscriber in Subscriber.objects.filter(
+                    person__student__enrolment_number = enrolment_no
+                ) if subscriber.no_due
             ]
         else:
             subscribers = [
