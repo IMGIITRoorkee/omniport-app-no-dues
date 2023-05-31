@@ -97,6 +97,7 @@ INSTITUTE_SPORTS_ASSOCIATION = 'iso'
 DORA_OFFICE = 'dor'
 FINANCE_SECTION = 'fin'
 ACADEMIC_SECTION = 'acad'
+INSTITUTE_INSTRUMENTATION_CENTRE = 'iic'
 
 OTHER_AUTHORITIES = (
     (LIBRARY, 'Central Library'),
@@ -108,4 +109,5 @@ OTHER_AUTHORITIES = (
     (DORA_OFFICE, 'DORA Office'),
     (FINANCE_SECTION, 'Finance Section'),
     (ACADEMIC_SECTION, 'Academic Section'),
+    (INSTITUTE_INSTRUMENTATION_CENTRE, 'Institute Instrumentation Centre'),
 )
