@@ -5,8 +5,9 @@ from no_dues.models import Authority, Subscriber, Permission
 Department = swapper.load_model('kernel', 'Department')
 common_slugs = ['lib', 'ccb', 'hbc', 'icc', 'iso', 'dor', 'hec', 'acad', 'fin', 'stc', 'cuc']
 ug_slugs = ['nss', 'ncc']
-pg_slugs = []
-
+pg_slugs = ['iic']
+phd_slugs = ['iic']
+idd_slugs = ['iic']
 
 subscribers = Subscriber.objects.all()
 authorities = Authority.objects.all()
@@ -39,11 +40,17 @@ def generate_permissions_for_subscribers(subscribers):
         slugs.append(authority_department_slug)
         slugs.extend(common_slugs)
 
-        graduation_code = student.branch.degree.graduation[0]
+        degree = student.branch.degree
+        graduation_code = degree.graduation[0]
         if graduation_code == 'gra':
             slugs.extend(ug_slugs)
-        elif graduation_code == 'doc':
+        elif graduation_code == 'pos':
             slugs.extend(pg_slugs)
+        elif graduation_code == 'doc':
+            slugs.extend(phd_slugs)
 
+        if degree.code == 'idd':
+            slugs.extend(idd_slugs)
+            
         for slug in slugs:
             generate_permission(slug, subscriber)
