@@ -6,6 +6,9 @@ from kernel.serializers.person import AvatarSerializer
 from no_dues.models import Subscriber
 
 
+from formula_one.models import ContactInformation
+
+
 class SubscriberSerializer(ModelSerializer):
     """
     Serializer for the Subscriber model
@@ -39,6 +42,8 @@ class SubscriberSerializer(ModelSerializer):
         read_only=True,
     )
 
+    person_email = serializers.SerializerMethodField()
+
     person_department = serializers.CharField(
         source="person.student.branch.department.name",
         read_only=True,
@@ -61,3 +66,9 @@ class SubscriberSerializer(ModelSerializer):
             'no_due',
             'required_authorities_selected',
         ]
+
+    def get_person_email(self, instance):
+        try:
+            return instance.person.contact_information.get().email_address
+        except ContactInformation.DoesNotExist:
+            return None
