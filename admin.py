@@ -24,8 +24,6 @@ class SubscriberAdmin(ModelAdmin):
     The class controls the behaviour of Subscriber in Omnipotence
     """
 
-    inlines = (PermissionInline, )
-
 
 omnipotence.register(Authority)
 omnipotence.register(Verifier)

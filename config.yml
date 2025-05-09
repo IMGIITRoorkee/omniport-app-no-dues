@@ -11,4 +11,5 @@ acceptables:
   - name: no_dues.Subscriber
     activeStatuses:
     - IS_ACTIVE
+    - HAS_BEEN_ACTIVE
   - name: no_dues.Verifier
