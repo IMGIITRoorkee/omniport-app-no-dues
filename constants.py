@@ -100,6 +100,7 @@ DORA_OFFICE = 'dor'
 FINANCE_SECTION = 'fin'
 ACADEMIC_SECTION = 'acad'
 INSTITUTE_INSTRUMENTATION_CENTRE = 'iic'
+SENATE_COMMITTEE_FOR_SCHOLARSHIP_AND_PRIZES_SCSP = 'scp'
 
 OTHER_AUTHORITIES = (
     (LIBRARY, 'Central Library'),
@@ -112,4 +113,5 @@ OTHER_AUTHORITIES = (
     (FINANCE_SECTION, 'Finance Section'),
     (ACADEMIC_SECTION, 'Academic Section'),
     (INSTITUTE_INSTRUMENTATION_CENTRE, 'Institute Instrumentation Centre'),
+    (SENATE_COMMITTEE_FOR_SCHOLARSHIP_AND_PRIZES_SCSP, 'Senate Committee for Scholarship and Prizes (SCSP)'),
 )
