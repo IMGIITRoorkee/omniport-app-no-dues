@@ -48,12 +48,13 @@ RESIDENCES_EDITED_SLUG = [('azb_bhawan', 'Azad bhawan'),
  ('khs_bhawan', 'Khosla international house & A.N. Khosla house'),
  ('vigb_bhawan', 'Vigyan kunj (Boys)'),
  ('vigg_bhawan', 'Vigyan kunj (Girls)'),
- ('null_bhawan', 'Non-residing (No Hostel)')
+ ('null_bhawan', 'Non-residing (No bhawan)')
 ]
 
 # Mess
 MESS_EDITED_SLUG = [('azb_mess', 'Azad bhawan mess'),
  ('ctb_mess', 'Cautley bhawan mess'),
+ ('gnb_mess', 'Ganga bhawan mess'),
  ('gvb_mess', 'Govind bhawan mess'),
  ('jlb_mess', 'Jawahar bhawan mess'),
  ('rkb_mess', 'Radhakrishnan bhawan mess'),
@@ -64,7 +65,8 @@ MESS_EDITED_SLUG = [('azb_mess', 'Azad bhawan mess'),
  ('kgb_mess', 'Kasturba bhawan mess'),
  ('mvigb_mess', 'Malviya & Indira bhawan mess'),
  ('vig_mess', 'Vigyan kunj mess'),
- ('null_mess', 'Non-dining (No Mess)')
+ ('hlg_mess', 'Himalaya bhawan mess'),
+ ('null_mess', 'Non-dining (No mess)')
 ]
 
 # Departments
