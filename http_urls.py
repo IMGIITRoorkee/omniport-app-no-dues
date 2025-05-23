@@ -11,6 +11,7 @@ from no_dues.views.mass_permission_status_update import (
     MassPermissionStatusUpdate
 )
 from no_dues.views.select_authorities import SelectAuthorities
+from no_dues.views.add_authorities import AddAuthorities
 
 app_name = 'no_dues'
 
@@ -26,4 +27,5 @@ urlpatterns = [
     path('subscriber/<str:enrolment_number>/', SubscriberDetailView.as_view()),
     path('update_status/', MassPermissionStatusUpdate.as_view()),
     path('select_authorities/', SelectAuthorities.as_view()),
+    path('add_authorities/', AddAuthorities.as_view()),
 ]
