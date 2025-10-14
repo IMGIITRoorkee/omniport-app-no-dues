@@ -103,6 +103,7 @@ class SubscriberListView(ListAPIView):
                     }, inplace=True)
                     permissions_df = permissions_df.fillna('nreq')
                     permissions_df = permissions_df[permissions_df['Department']!='Mehta Family School of Data Science and Artificial Intelligence']
+                    permissions_df = permissions_df[permissions_df['Department']!='International Centre of Excellence for Dams']
                     permissions_df = permissions_df[permissions_df['Department']!='nreq']
                     permissions_df = permissions_df.apply(beautify_mass_dataframe, axis=1)
                     permissions_df = delete_extra_columns(permissions_df)
