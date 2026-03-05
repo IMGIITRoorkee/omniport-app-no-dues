@@ -5,7 +5,7 @@ from no_dues.models import Authority, Subscriber, Permission
 Department = swapper.load_model('kernel', 'Department')
 common_slugs = ['lib', 'ccb', 'hbc', 'icc', 'iso', 'dor', 'hec', 'acad', 'fin', 'stc', 'cuc','scp']
 ug_slugs = ['nss', 'ncc']
-pg_slugs = ['iic_centre']
+pg_slugs = []
 phd_slugs = ['iic_centre']
 idd_slugs = ['iic_centre']
 
