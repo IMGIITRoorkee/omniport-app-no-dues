@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from kernel.managers.get_role import get_role
 from no_dues.models import Permission
 from no_dues.permissions import (
-    HasSubscriberRights, HasVerifierRights, has_subscriber_rights, has_verifier_rights
+    IsSubscriber, HasSubscriberRights, HasVerifierRights, is_subscriber, has_subscriber_rights, has_verifier_rights
 )
 from no_dues.serializers.permission import (
     PermissionListSerializer, PermissionDetailSerializer
@@ -35,7 +35,7 @@ class PermissionViewset(ModelViewSet):
     """
 
     serializer_class = PermissionListSerializer
-    permission_classes = [HasSubscriberRights | HasVerifierRights]
+    permission_classes = [IsSubscriber | HasSubscriberRights | HasVerifierRights]
     http_method_names = [
         'get',
         'patch',
@@ -70,7 +70,7 @@ class PermissionViewset(ModelViewSet):
 
         result = []
         person = self.request.person
-        if has_subscriber_rights(person):
+        if is_subscriber(person):
             logger.info(f'{person.user.username} get its permission list')
             result = Permission.objects.filter(
                 subscriber__person=person).order_by('authority')
