@@ -27,7 +27,16 @@ def beautify_subscriber_dataframe(row):
     return row
 
 def beautify_mass_dataframe(row):
-    row['Department Status'] = PERMISSION_STATUS_DICTIONARY[row[row['Department']]]
+    try:
+        department_status = row[row['Department']]
+    except KeyError:
+        # The student's department has no corresponding authority column in
+        # this year's permission table (no departmental due was tracked for
+        # it), so treat the departmental clearance as not required.
+        department_status = 'nreq'
+    row['Department Status'] = PERMISSION_STATUS_DICTIONARY.get(
+        department_status, PERMISSION_STATUS_DICTIONARY['nreq']
+    )
     row['Final Status'] = 'All Approved, Not Applicable or Approved on Condition'
     row['Mess'] = ''
     bhawans=list()
