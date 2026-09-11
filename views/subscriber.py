@@ -144,7 +144,19 @@ class SubscriberListView(ListAPIView):
                 return response
 
         except KeyError:
-            logger.error(f'{username} got a keyerror while getting the subscriber data')
+            logger.error(
+                f'{username} got a keyerror while getting the subscriber data',
+                exc_info=True,
+            )
+            if request.query_params.get('download', '') == 'xlsx':
+                # A download request failed while building its file. Return a
+                # real error instead of falling through to the paginated JSON
+                # list, which the frontend cannot turn into a file download and
+                # which masks the failure as a misleading 200.
+                return Response(
+                    {'detail': 'Could not generate the requested data file.'},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
 
         return super(SubscriberListView, self).list(self, request, *args, **kwargs)
 
